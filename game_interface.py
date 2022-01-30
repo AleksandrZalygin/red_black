@@ -34,11 +34,9 @@ class GameInterface:
             self.game_color = 'Зелёное'
             print(f'Выпало зелёное число -- {self.game.game_number}')
 
-    def checking_winning(self):
-        game_result = self.game.get_prize_color_bet()
-
+    def checking_winning(self, money):
+        game_result = self.game.get_prize_color_bet(money) + self.game.get_prize_number_bet()
         if game_result < 0:
             print('К сожалению, Вы проиграли!')
-
         else:
             print('Поздравляем с победой!')

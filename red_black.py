@@ -1,6 +1,7 @@
 import random
 
 from exceptions import NotCorrectColorIndex
+from user import User
 
 
 class RedBlack:
@@ -20,7 +21,15 @@ class RedBlack:
         self.__shuffle_game_box()
         self.game_number = self.__generate_number()
 
-    def get_prize_color_bet(self):
+    def check_correct_bet(function):
+        def wrapper(self, money, *args, **kwargs):
+            if money < self.bet or self.bet > 300 or money <= 0:
+                raise NotCorrectColorIndex("Ставка не может превышать сумму в банке и не может быть больше 300.")
+            return function(self, money, *args, **kwargs)
+        return wrapper
+
+    @check_correct_bet
+    def get_prize_color_bet(self, money):
         if (self.game_number in self.red_numbers and \
             self.user_color in self.red_numbers) or \
             (self.game_number in self.black_numbers and \
@@ -31,10 +40,12 @@ class RedBlack:
             self.user_color in self.green_numbers:
             return self.bet * 14
 
+        return -self.bet
+
+    def get_prize_number_bet(self):
         if self.game_number == self.user_number:
             return self.bet * 30
-
-        return -self.bet
+        return 0
 
     def check_correct_index_color(function):
         def wrapper(self, user_color_index, *args, **kwargs):
@@ -61,3 +72,8 @@ class RedBlack:
 
         self.color = 'Зелёное'
         return 0
+
+    def checking_user_bank(self, bank):
+        if bank <= 0:
+            return False
+        return True
