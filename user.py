@@ -7,27 +7,25 @@ class User:
     def __init__(self, user_name: str, user_bank=0):
         self.user_name = user_name
         self.user_bank = user_bank
-        self.password = self.__get_right_password_from_json()
-        self.money = self.__get_info_of_bank_from_json_file()
 
-    def registration_new_user(self):
-        if f"{self.user_name.replace('@', '')}.json" in os.listdir('data'):
+    def registration_new_user(self, password):
+        if f"{self.user_name.replace('@', '')}.json" in os.listdir('../data/'):
             raise FileAlreadyExist('Такой пользователь уже существует!')
             return False
 
         for letter in self.user_name:
-            if not self.password.startswith('@') or letter in r'[0-9]':
+            if not self.user_name.startswith('@') or letter in r'[0-9]':
                 raise NotCorrectNickName('Неккоректное имя пользователя!')
                 return False
 
-        if len(self.password) < 8:
+        if len(password) < 8:
             raise NotCorrectPassword('Пароль не может быть меньше восьми символов!')
             return False
 
-        self.__create_json_file()
+        self.__create_json_file(password)
         return True
 
-    def __create_json_file(self, password):
+    def create_json_file(self, password):
         user_data = {
             "nickname": self.user_name,
             "password": password,
@@ -37,16 +35,18 @@ class User:
 
         with open(f'data/{self.user_name.replace("@", "")}.json', 'w', encoding='utf-8') as json_file:
             json.dump(user_data, json_file, ensure_ascii=False)
+        return True
 
-    def __get_right_password_from_json(self):
+    def _get_right_password_from_json(self):
         with open(f'data/{self.user_name.replace("@", "")}.json', 'r', encoding='utf-8') as json_file:
             data = json.load(json_file)
         return data['password']
 
-    def __get_info_of_bank_from_json_file(self):
+    def _get_info_of_bank_from_json_file(self):
         with open(f'data/{self.user_name.replace("@", "")}.json', 'r', encoding='utf-8') as json_file:
             data = json.load(json_file)
-        return data['bank']
+            self.money = data['bank']
+        return self.money
 
     def add_bonus(function):
         def wrapper(self, money,  *args, **kwargs):
@@ -60,12 +60,13 @@ class User:
         with open(f'data/{self.user_name.replace("@", "")}.json', 'r', encoding='utf-8') as json_file:
             data = json.load(json_file)
 
-        data['bank'] += money
+        new_bank = data['bank'] + money
+        data['bank'] = new_bank
 
         with open(f'data/{self.user_name.replace("@", "")}.json', 'w', encoding='utf-8') as json_file:
             json.dump(data, json_file, ensure_ascii=False)
 
-        return data['bank']
+        return new_bank
 
     def update_statistic(self,  game_color: str,
                                 game_number: int,

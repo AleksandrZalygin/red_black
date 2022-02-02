@@ -11,7 +11,7 @@ while True:
     if f"{user_name.replace('@', '')}.json" in os.listdir('data'):
         user = User(user_name)
         password = input('Введите пароль: ')
-        if password == user.password:
+        if password == user._get_right_password_from_json():
             print('Авторизация прошла успешно.')
             print(f'Ваш банк -- {user.money}')
 
