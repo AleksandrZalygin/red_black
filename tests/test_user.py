@@ -6,10 +6,12 @@ SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(os.path.dirname(SCRIPT_DIR))
 from user import User
 
+# Перед запуском тестов нужно в классе User везде, где упоминается директория 'data', проставить '../',
+# чтобы получилось: '../data/'. Иначе работать не будет.
 
 class TestUser(unittest.TestCase):
     # Тесты для класса User
-    """ 
+
     def test_create_json_file(self):
         # Тест создания нового json-файла.
         result = User('@nikolay', 1000).create_json_file('12345678')
@@ -34,7 +36,7 @@ class TestUser(unittest.TestCase):
 
     def test_get_right_password_from_json(self):
         # Тест получения пароля пользователя из json-файла.
-        result = User('@nikolay').get_right_password_from_json()
+        result = User('@nikolay')._get_right_password_from_json()
         self.assertEqual(result, '12345678')
 
 
@@ -49,7 +51,6 @@ class TestUser(unittest.TestCase):
         result = User('@nikolay').update_user_bank(200)
         result_true = User('@nikolay')._get_info_of_bank_from_json_file()
         self.assertEqual(result, result_true)
-    """
 
     def test_update_user_bank_with_bonus(self):
         # Тест обновления банка пользователя.

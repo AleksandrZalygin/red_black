@@ -7,25 +7,26 @@ class User:
     def __init__(self, user_name: str, user_bank=0):
         self.user_name = user_name
         self.user_bank = user_bank
+        self.money = self._get_info_of_bank_from_json_file()
 
     def registration_new_user(self, password):
-        if f"{self.user_name.replace('@', '')}.json" in os.listdir('../data/'):
+        if f"{self.user_name.replace('@', '')}.json" in os.listdir('data'):
             raise FileAlreadyExist('Такой пользователь уже существует!')
             return False
 
         for letter in self.user_name:
             if not self.user_name.startswith('@') or letter in r'[0-9]':
-                raise NotCorrectNickName('Неккоректное имя пользователя!')
+                raise NotCorrectNickName('Некорректное имя пользователя!')
                 return False
 
         if len(password) < 8:
             raise NotCorrectPassword('Пароль не может быть меньше восьми символов!')
             return False
 
-        self.__create_json_file(password)
+        self._create_json_file(password)
         return True
 
-    def create_json_file(self, password):
+    def _create_json_file(self, password):
         user_data = {
             "nickname": self.user_name,
             "password": password,
@@ -43,10 +44,12 @@ class User:
         return data['password']
 
     def _get_info_of_bank_from_json_file(self):
-        with open(f'data/{self.user_name.replace("@", "")}.json', 'r', encoding='utf-8') as json_file:
-            data = json.load(json_file)
-            self.money = data['bank']
-        return self.money
+        if f"{self.user_name.replace('@', '')}.json" in os.listdir('data'):
+            with open(f'data/{self.user_name.replace("@", "")}.json', 'r', encoding='utf-8') as json_file:
+                data = json.load(json_file)
+            return data['bank']
+        else:
+            return self.user_bank
 
     def add_bonus(function):
         def wrapper(self, money,  *args, **kwargs):
