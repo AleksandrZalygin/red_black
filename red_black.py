@@ -14,7 +14,7 @@ class RedBlack:
 
         self.game_box = self.red_numbers + self.black_numbers + self.green_numbers
         self.bet = bet
-        self.user_color = self.__from_color_index_to_number(user_color_index)
+        self.user_color = self._from_color_index_to_number(user_color_index)
         self.user_number = user_number
 
     def start_game(self):
@@ -28,7 +28,7 @@ class RedBlack:
             return function(self, money, *args, **kwargs)
         return wrapper
 
-    @check_correct_bet
+    @check_correct_bet 
     def get_prize_color_bet(self, money):
         if (self.game_number in self.red_numbers and \
             self.user_color in self.red_numbers) or \
@@ -61,7 +61,7 @@ class RedBlack:
         return random.sample(self.game_box, 1)[0]
 
     @check_correct_index_color
-    def __from_color_index_to_number(self, user_color_index: int):
+    def _from_color_index_to_number(self, user_color_index: int):
         if user_color_index == 1:
             self.color = 'Красное'
             return random.sample(self.red_numbers, 1)[0]
